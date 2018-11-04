@@ -196,14 +196,14 @@ char *kv_store_read(char *key){
 
     char *value = NULL;
 
-    int hash = hash(key);
-    pod key_pod = (addr->pods[hash]);
+    int hashed_key = hash(key);
+    pod key_pod = (addr->pods[hashed_key]);
     int i;
     for(i = 0; i < MAX_VAL; i++){
         key_values curr_entry = key_pod.distinct_keys[i];
-        if(hash == hash(curr_entry.values[0].key)){
+        if(hashed_key == hash(curr_entry.values[0].key)){
             value = (char *) calloc(1, sizeof(char) * 32);
-            strcpy(value, curr_entry->values[curr_entry.LRU_idx]);
+            strcpy(value, curr_entry.values[curr_entry.LRU_idx]);
             curr_entry.LRU_idx++;
             if(curr_entry.LRU_idx >= MAX_VAL - 1){
                 curr_entry.LRU_idx = 0;
