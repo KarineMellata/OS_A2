@@ -24,7 +24,7 @@ int hash(unsigned char *str) {
     return (int) hash;
 }
 
-int last_idx(char[] arr){
+int last_idx(char arr[]){
     return sizeof(arr)/sizeof(arr[0]);
 }
 
@@ -34,8 +34,8 @@ int init_info(store* ptr) {
     int idx;
     //Init pods
     for(idx = 0; idx < NUM_OF_PODS; idx++){
-        (ptr->pods[index]).insert_idx = 0;
-        (ptr->pods[index]).LRU_idx = 0;
+        (ptr->pods[idx]).insert_idx = 0;
+        (ptr->pods[idx]).LRU_idx = 0;
         int i;
         //Init all LRU objects
         for(i = 0; i < 10; i++){
@@ -50,13 +50,13 @@ int init_info(store* ptr) {
 int kv_store_create(char *name){
     int fd = shm_open(name, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
     if(fd < 0){
-        perror();
+        perror("Error ");
         return -1;
     }
 
     if(ftruncate(fd, strlen(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -64,14 +64,14 @@ int kv_store_create(char *name){
 
     if(addr == MAP_FAILED){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
     init_info(addr);
 
     if(munmap(addr, sizeof(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -107,7 +107,7 @@ int insert(char* key, char* value, store* ptr, int hashed_key) {
     (ptr->pods[hashed_key]).insert_idx++;
 
     if((ptr->pods[hashed_key]).insert_idx >= (MAX_VAL - 1)){
-        ptr->pods[hashed_key]).insert_idx = 0;
+        (ptr->pods[hashed_key]).insert_idx = 0;
     }
 
     return 0;
@@ -134,12 +134,12 @@ int kv_store_write(char *key, char *value){
     strncpy(new_key, key, last_key_idx);
     new_key[last_key_idx] = '\0';
     
-    strncpy(new_val, val, last_val_idx);
+    strncpy(new_val, value, last_val_idx);
     new_val[last_val_idx] = '\0';
     
     int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
     if(fd < 0){
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -147,13 +147,13 @@ int kv_store_write(char *key, char *value){
 
     if(addr == MAP_FAILED){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
     if(ftruncate(fd, strlen(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -164,7 +164,7 @@ int kv_store_write(char *key, char *value){
 
     if(munmap(addr, sizeof(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
     close(fd);
@@ -176,7 +176,7 @@ int kv_store_write(char *key, char *value){
 char *kv_store_read(char *key){
     int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
     if(fd < 0){
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -184,13 +184,13 @@ char *kv_store_read(char *key){
 
     if(addr == MAP_FAILED){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
     if(ftruncate(fd, strlen(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
 
@@ -202,7 +202,6 @@ char *kv_store_read(char *key){
     for(i = 0; i < MAX_VAL; i++){
         key_values curr_entry = key_pod.distinct_keys[i];
         if(hash == hash(curr_entry.values[0].key)){
-            int j;
             value = (char *) calloc(1, sizeof(char) * 32);
             strcpy(value, curr_entry->values[curr_entry.LRU_idx]);
             curr_entry.LRU_idx++;
@@ -215,7 +214,7 @@ char *kv_store_read(char *key){
 
     if(munmap(addr, sizeof(store)) < 0){
         close(fd);
-        perror();
+        perror("Error ");
         return -1;
     }
     close(fd);
