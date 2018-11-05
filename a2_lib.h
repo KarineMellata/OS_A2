@@ -10,32 +10,24 @@
 #define MAX_KEY_SIZE 32
 #define MAX_VALUE_SIZE 256
 #define MAX_POD_ENTRIES 256
-#define MAX_VAL 10
-
-typedef struct kv { // Key value pair
-    char key[MAX_KEY_SIZE];
-    char val[MAX_VALUE_SIZE];
-} kv_entry;
-
-typedef struct values { // All values that are mapped to the same key
-    kv_entry values[MAX_VAL];
-    int LRU_idx; // Least recently used index
-} key_values;
+#define MAX_VAL 16
 
 typedef struct kv_pod { // Pods
-    key_values distinct_keys[MAX_VAL];
-    int insert_idx; // Next insertion index
-    int LRU_idx; // Least recently used index
+    char distinct_keys[MAX_VALUE_SIZE][MAX_VAL];
+    char vals[MAX_VALUE_SIZE][MAX_KEY_SIZE];
+    int cache_valid; // Next insertion index
+    sem_t protect;
 } pod;
 
 typedef struct kv_store { // Store
     pod pods[NUM_OF_PODS];
+    int clients;
+    char name[32];
+    sem_t protect;
 } store;
 
-#define KV_SIZE sizeof(kv_entry) + 32 * sizeof(char)
-#define KV_SIZE2 sizeof(key_values) + MAX_VAL * KV_SIZE
-#define POD_SIZE sizeof(pod) + MAX_VAL * KV_SIZE2
-#define STORE_SIZE sizeof(store) + NUM_OF_PODS * POD_SIZE
+#define POD_SIZE sizeof(pod)
+#define STORE_SIZE sizeof(store)
 
 
 int kv_store_create(char *kv_store_name);
