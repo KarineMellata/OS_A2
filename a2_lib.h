@@ -5,7 +5,7 @@
 #ifndef _A2_LIB_
 #define _A2_LIB_
 
-#define SHAREDMEM_NAME 260741673 _KM
+#define SHAREDMEM_NAME 260741673
 #define NUM_OF_PODS 300
 #define MAX_KEY_SIZE 32
 #define MAX_VALUE_SIZE 256
@@ -36,5 +36,11 @@ typedef struct kv_store { // Store
 #define KV_SIZE2 sizeof(key_values) + MAX_VAL * KV_SIZE
 #define POD_SIZE sizeof(pod) + MAX_VAL * KV_SIZE2
 #define STORE_SIZE sizeof(store) + NUM_OF_PODS * POD_SIZE
+
+
+int kv_store_create(char *kv_store_name);
+int kv_store_write(char *key, char *value);
+char *kv_store_read(char *key);
+char **kv_store_read_all(char *key);
 
 #endif //_A2_LIB_
