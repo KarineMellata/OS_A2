@@ -57,13 +57,13 @@ int kv_store_create(char *name){
         perror("File descriptor error");
         return -1;
     }
-
+    printf("Hello1");
     if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
         perror("Truncate error");
         return -1;
     }
-
+    printf("Hello2");
     store *addr = mmap(NULL, STORE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
@@ -72,7 +72,7 @@ int kv_store_create(char *name){
         return -1;
     }
     init_info(addr);
-
+    printf("Hello3");
     if(munmap(addr, STORE_SIZE) < 0){
         close(fd);
         perror("Munmap error");
