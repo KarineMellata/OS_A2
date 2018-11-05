@@ -224,6 +224,25 @@ char *kv_store_read(char *key){
 
 //Take a key and return all values in store
 char **kv_store_read_all(char *key){
+    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
+    if(fd < 0){
+        perror("Error ");
+        return -1;
+    }
+
+    store *addr = mmap(NULL, STORE_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+    if(addr == MAP_FAILED){
+        close(fd);
+        perror("Error ");
+        return -1;
+    }
+
+    if(ftruncate(fd, STORE_SIZE) < 0){
+        close(fd);
+        perror("Error ");
+        return -1;
+    }
     char **values = (char **) calloc(16, sizeof(char*));
     return values;
 }
