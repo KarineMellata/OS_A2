@@ -8,6 +8,12 @@ void kill_shared_mem(){
     shm_unlink(__TEST_SHARED_MEM_NAME__);
 }
 
+void kv_delete_db() {
+    kill_shared_mem();
+    //shm_unlink("MY_WRITER_SEMAPHORE_NAME");
+    //shm_unlink("MY_READER_SEMAPHORE_NAME");
+}
+
 void intHandler(int dummy) {
     kv_delete_db();
     exit(0);
@@ -48,7 +54,7 @@ void write_test(char **keys_buf, char ***data_buf, int elem_num[__TEST_MAX_KEY__
     printf("-----------Error Count: %d-----------\n\n", *errors);
 }
 
-void read_test(char **keys_buf, char ***data_buf, int elem_num[__TEST_MAX_KEY__], 
+void read_test(char **keys_buf, char ***data_buf, int elem_num[__TEST_MAX_KEY__],
                int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY__],
                int k, int *errors){
     int temp_flag = -1;
@@ -99,7 +105,7 @@ void get_patterns(int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY__],
     for(int k = 1; k < __TEST_MAX_POD_ENTRY__; k++){
         pattern_index = (k + min_index) % __TEST_MAX_POD_ENTRY__;
         if(patterns[0] == expected_result[pattern_index][i]){
-            break;   
+            break;
         }else{
             patterns[k] = expected_result[pattern_index][i];
             *pattern_length += 1;
@@ -119,7 +125,7 @@ void get_patterns(int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY__],
 }
 
 void read_order_test(int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY__],
-                      int i, int *patterns, int pattern_length, int *errors){
+                     int i, int *patterns, int pattern_length, int *errors){
     //Check Read Order
     int FIFO_TEST[pattern_length];
     int start_index = 0;
@@ -140,7 +146,7 @@ void read_order_test(int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY_
             printf("\n");
             break;
         }
-    }   
+    }
 
     memset(FIFO_TEST, -1, pattern_length * sizeof(int));
     //Check FIFO
@@ -155,7 +161,7 @@ void read_order_test(int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY_
     }
 }
 
-void read_all_test(char ** keys_buf, char *** data_buf, 
+void read_all_test(char ** keys_buf, char *** data_buf,
                    int expected_result[__TEST_MAX_POD_ENTRY__][__TEST_MAX_KEY__],
                    int i, int *patterns, int pattern_length, int *errors){
     //Read All tests
@@ -203,6 +209,9 @@ void read_all_test(char ** keys_buf, char *** data_buf,
         free(read_all);
     }
 }
+
+
+
 int main(){
     int errors = 0;
     char *temp;
@@ -219,6 +228,7 @@ int main(){
     signal(SIGINT, intHandler);
     signal(SIGQUIT, intHandler);
     signal(SIGTSTP, intHandler);
+    signal(SIGSEGV, intHandler);
 
     kill_shared_mem();
 
