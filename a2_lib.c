@@ -27,7 +27,7 @@ int hash(unsigned char *str) {
 
 //Initialize bookkeeping information
 int init_info(store* ptr) {
-    memset(ptr, 0, STORE_SIZE);
+    memset(ptr, 0, sizeof(store));
     int idx;
     //Init pods
     for(idx = 0; idx < NUM_OF_PODS; idx++){
@@ -51,13 +51,13 @@ int kv_store_create(char *name){
         return -1;
     }
 
-    if(ftruncate(fd, STORE_SIZE) < 0){
+    if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
     }
 
-    store *addr = mmap(NULL, STORE_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    store *addr = mmap(NULL, sizeof(store) , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
         close(fd);
@@ -66,7 +66,7 @@ int kv_store_create(char *name){
     }
     init_info(addr);
 
-    if(munmap(addr, STORE_SIZE) < 0){
+    if(munmap(addr, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -140,7 +140,7 @@ int kv_store_write(char *key, char *value){
         return -1;
     }
 
-    store *addr = mmap(NULL, STORE_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    store *addr = mmap(NULL, sizeof(store) , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
         close(fd);
@@ -148,7 +148,7 @@ int kv_store_write(char *key, char *value){
         return -1;
     }
 
-    if(ftruncate(fd, STORE_SIZE) < 0){
+    if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -159,7 +159,7 @@ int kv_store_write(char *key, char *value){
 
     insert(new_key, new_val, addr, hashed_key);
 
-    if(munmap(addr, STORE_SIZE) < 0){
+    if(munmap(addr, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -177,7 +177,7 @@ char *kv_store_read(char *key){
         return -1;
     }
 
-    store *addr = mmap(NULL, STORE_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    store *addr = mmap(NULL, sizeof(store), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
         close(fd);
@@ -185,7 +185,7 @@ char *kv_store_read(char *key){
         return -1;
     }
 
-    if(ftruncate(fd, STORE_SIZE) < 0){
+    if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -210,7 +210,7 @@ char *kv_store_read(char *key){
         }
     }
 
-    if(munmap(addr, STORE_SIZE) < 0){
+    if(munmap(addr, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -228,7 +228,7 @@ char **kv_store_read_all(char *key){
         return -1;
     }
 
-    store *addr = mmap(NULL, STORE_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    store *addr = mmap(NULL, sizeof(store), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
         close(fd);
@@ -236,7 +236,7 @@ char **kv_store_read_all(char *key){
         return -1;
     }
 
-    if(ftruncate(fd, STORE_SIZE) < 0){
+    if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
         perror("Error ");
         return -1;
