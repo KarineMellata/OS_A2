@@ -14,10 +14,10 @@ extern char *kv_store_read(const char *key);
 extern char **kv_store_read_all(const char *key);
 
 /* if you write your own interface, please fill the following adaptor */
-int    (*kv_store_create)(const char*)             = NULL;
-int    (*kv_store_write)(const char*, const char*) = NULL;
-char*  (*kv_store_read)(const char*)               = NULL;
-char** (*kv_store_read_all)(const char* key)       = NULL;
+//int    (*kv_store_create)(const char*)             = NULL;
+//int    (*kv_store_write)(const char*, const char*) = NULL;
+//char*  (*kv_store_read)(const char*)               = NULL;
+//char** (*kv_store_read_all)(const char* key)       = NULL;
 
 #endif
 
