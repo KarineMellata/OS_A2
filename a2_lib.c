@@ -24,9 +24,6 @@ int hash(unsigned char *str) {
     return (int) hash;
 }
 
-int last_idx(char arr[]){
-    return sizeof(arr)/sizeof(arr[0]);
-}
 
 //Initialize bookkeeping information
 int init_info(store* ptr) {
@@ -83,7 +80,7 @@ int get_key_idx(char* key, int hashed_key, store *sm) {
     pod key_pod = sm->pods[hashed_key];
     int idx;
 
-    for(idx = 0; idx < last_idx(key_pod.distinct_keys); idx++) {
+    for(idx = 0; idx < sizeof(key_pod.distinct_keys)/sizeof(key_pod.distinct_keys[0]); idx++) {
         if(strcmp((((key_pod.distinct_keys[idx]).values[0]).key), key) == 0)
             return idx;
     }
@@ -99,7 +96,7 @@ int insert(char* key, char* value, store* ptr, int hashed_key) {
 
 
     int idx = (ptr->pods[hashed_key]).insert_idx;
-    int dist_key_idx = last_idx((ptr->pods[hashed_key]).distinct_keys[idx].values);
+    int dist_key_idx = sizeof((ptr->pods[hashed_key]).distinct_keys[idx].values)/sizeof((ptr->pods[hashed_key]).distinct_keys[idx].values[0]) - 1;
     if(dist_key_idx >= (MAX_VAL - 1)){
         dist_key_idx = 0;
     }
@@ -115,7 +112,7 @@ int insert(char* key, char* value, store* ptr, int hashed_key) {
 
 int modify_entry(char* key, char* value, key_values key_vals) {
     int i;
-    for(i = 0; i < last_idx(key_vals.values); i++) {
+    for(i = 0; i < sizeof((key_vals.values))/sizeof((key_vals.values[0])); i++) {
         if(key_vals.values[i].key[0] == '\0') {
             fflush(stdout);
         }
