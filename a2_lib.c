@@ -134,7 +134,7 @@ int kv_store_write(char *key, char *value){
     strncpy(new_val, value, last_val_idx);
     new_val[last_val_idx] = '\0';
 
-    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0600); //All permission for owner
+    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0600); //All permissions
     if(fd < 0){
         perror("Error ");
         return -1;
@@ -244,4 +244,3 @@ char **kv_store_read_all(char *key){
     char **values = (char **) calloc(16, sizeof(char*));
     return values;
 }
-
