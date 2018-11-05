@@ -244,3 +244,8 @@ char **kv_store_read_all(char *key){
     char **values = (char **) calloc(16, sizeof(char*));
     return values;
 }
+
+
+int main(){
+    kv_store_create(__TEST_SHARED_MEM_NAME__);
+}
