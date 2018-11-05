@@ -154,7 +154,7 @@ int kv_store_write(char *key, char *value){
         return -1;
     }
 
-    int hashed_key = hash(key);
+    int hashed_key = hash((unsigned char *)key);
     int idx = get_key_idx(key, hashed_key, addr);
 
     insert(new_key, new_val, addr, hashed_key);
@@ -193,12 +193,13 @@ char *kv_store_read(char *key){
 
     char *value = NULL;
 
-    int hashed_key = hash(key);
+    int hashed_key = hash((unsigned char *)key);
     pod key_pod = (addr->pods[hashed_key]);
     int i;
     for(i = 0; i < MAX_VAL; i++){
         key_values curr_entry = key_pod.distinct_keys[i];
-        if(hashed_key == hash(curr_entry.values[0].key)){
+        char *key = &(curr_entry.values[0].key);
+        if(hashed_key == hash((unsigned char *) key)){
             value = (char *) calloc(1, sizeof(char) * 32);
             strcpy(value, curr_entry.values[curr_entry.LRU_idx].val);
             curr_entry.LRU_idx++;
