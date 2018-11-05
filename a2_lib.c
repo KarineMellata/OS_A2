@@ -51,13 +51,13 @@ int kv_store_create(char *name){
         return -1;
     }
 
-    if(ftruncate(fd, sizeof(store)) < 0){
+    if(ftruncate(fd, STORE_SIZE) < 0){
         close(fd);
         perror("Error ");
         return -1;
     }
 
-    store *addr = mmap(NULL, sizeof(store) , PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    store *addr = mmap(NULL, STORE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
     if(addr == MAP_FAILED){
         close(fd);
@@ -66,7 +66,7 @@ int kv_store_create(char *name){
     }
     init_info(addr);
 
-    if(munmap(addr, sizeof(store)) < 0){
+    if(munmap(addr, STORE_SIZE) < 0){
         close(fd);
         perror("Error ");
         return -1;
