@@ -153,59 +153,6 @@ void kv_store_print(void) {
     assert(sem_post(&gp_Store->protect) == 0);
 }
 
-int kv_delete_db(void) {
-    if(gp_Store == NULL)
-        return -1;
-
-    assert(sem_wait(&gp_Store->protect) == 0);
-
-    char n[sizeof(gp_Store->name)];
-    strncpy(n, gp_Store->name, sizeof(gp_Store->name));
-
-    assert(sem_post(&gp_Store->protect) == 0);
-
-    return kv_store_destroy(n);
-}
-
-int kv_store_destroy(char* name) {
-    if(gp_Store == NULL || name == NULL)
-        return -1;
-
-    cache_idx = 0;
-    cache_valid = MY_FALSE;
-    cache_key = NULL;
-    memset(cache_data, 0, sizeof(cache_data));
-
-    assert(sem_wait(&gp_Store->protect) == 0);
-    if(strncmp(gp_Store->name, name, sizeof(gp_Store->name) - 1) != 0) {
-        assert(sem_post(&gp_Store->protect) == 0);
-        return -1;
-    }
-
-    int cl = --gp_Store->clients;
-    assert(sem_post(&gp_Store->protect) == 0);
-
-    if(cl < 1) {
-        for(size_t i = 0; i < BUCKET_COUNT; i++)
-            assert(sem_destroy(&gp_Store->buckets[i].protect) == 0);
-        assert(sem_destroy(&gp_Store->protect) == 0);
-    }
-
-    int r = sm_detach(&gp_Store);
-    if(r != MY_OK)
-        return -1;
-
-    gp_Store = NULL;
-
-    if(cl < 1) {
-        r = sm_close(name);
-        if(r != MY_OK)
-            return -1;
-    }
-
-    return 0;
-}
-
 int kv_store_write(char* key, char* value) {
     if(key == NULL || value == NULL || gp_Store == NULL || strlen(key) < 1)
         return -1;
@@ -327,12 +274,6 @@ size_t hash_func(char* word, int32_t max) {
         hashAddress = ((hashAddress << 5) + hashAddress) + word[counter];
     }
     return ((hashAddress % max) < 0) ? -hashAddress % max : hashAddress % max;
-}
-
-void _intHandler(int dummy) {
-    UNUSED(dummy);
-    kv_delete_db();
-    exit(0);
 }
 
 #ifdef STANDALONE
