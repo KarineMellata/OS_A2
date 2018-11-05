@@ -54,13 +54,13 @@ int init_info(store* ptr) {
 int kv_store_create(char *name){
     int fd = shm_open(name, O_CREAT|O_RDWR, 0666); //All permission for owner
     if(fd < 0){
-        perror("Problem 1");
+        perror("File descriptor error");
         return -1;
     }
 
     if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
-        perror("Problem 2");
+        perror("Truncate error");
         return -1;
     }
 
@@ -68,14 +68,14 @@ int kv_store_create(char *name){
 
     if(addr == MAP_FAILED){
         close(fd);
-        perror("Error ");
+        perror("Mmap error");
         return -1;
     }
     init_info(addr);
 
     if(munmap(addr, STORE_SIZE) < 0){
         close(fd);
-        perror("Error ");
+        perror("Munmap error");
         return -1;
     }
 
@@ -141,7 +141,7 @@ int kv_store_write(char *key, char *value){
     strncpy(new_val, value, last_val_idx);
     new_val[last_val_idx] = '\0';
 
-    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0600); //All permissions
+    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0666); //All permissions
     if(fd < 0){
         perror("Error ");
         return -1;
@@ -178,7 +178,7 @@ int kv_store_write(char *key, char *value){
 
 //Find key and return copy of the value
 char *kv_store_read(char *key){
-    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0600); //All permission for owner
+    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0666); //All permission for owner
     if(fd < 0){
         perror("Error ");
         return -1;
@@ -229,7 +229,7 @@ char *kv_store_read(char *key){
 
 //Take a key and return all values in store
 char **kv_store_read_all(char *key){
-    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0600); //All permission for owner
+    int fd = shm_open(__TEST_SHARED_MEM_NAME__, O_CREAT|O_RDWR, 0666); //All permission for owner
     if(fd < 0){
         perror("Error ");
         return -1;
