@@ -135,21 +135,3 @@ char* kv_store_read(char* key);
  * @return NULL on error and Non NULL on success
  */
 char** kv_store_read_all(char* key);
-
-/**
- * @brief Deletes the store called 'name'
- * @param name Name of the store
- * @return -1 on error and 0 on success
- */
-int kv_store_destroy(char* name);
-
-/**
- * @brief Deletes the global store
- * @return -1 on error and 0 on success
- */
-int kv_delete_db(void);
-
-/**
- * @brief Prints the contents of the current store to stdout
- */
-void kv_store_print(void);
