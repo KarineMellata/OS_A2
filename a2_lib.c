@@ -54,13 +54,13 @@ int init_info(store* ptr) {
 int kv_store_create(char *name){
     int fd = shm_open(name, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
     if(fd < 0){
-        perror("Error ");
+        perror("Problem 1");
         return -1;
     }
 
-    if(ftruncate(fd, STORE_SIZE) < 0){
+    if(ftruncate(fd, sizeof(store)) < 0){
         close(fd);
-        perror("Error ");
+        perror("Problem 2");
         return -1;
     }
 
