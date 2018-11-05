@@ -224,7 +224,7 @@ char *kv_store_read(char *key){
 
 //Take a key and return all values in store
 char **kv_store_read_all(char *key){
-
-
+    char **values = (char **) calloc(16, sizeof(char*));
+    return values;
 }
 

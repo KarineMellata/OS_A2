@@ -16,7 +16,6 @@
 #include <errno.h>
 #include <time.h>
 #include <sys/mman.h>
-#include "a2_lib.h"
 //LEAVE MAX KEYS as twice the number of pods
 #define __TEST_MAX_KEY__  256
 #define __TEST_MAX_KEY_SIZE__ 31
