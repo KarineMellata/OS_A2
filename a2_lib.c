@@ -52,7 +52,7 @@ int init_info(store* ptr) {
 //Create a store if not yet created
 //Or open store if already existing
 int kv_store_create(char *name){
-    int fd = shm_open(name, O_CREAT|O_RDWR, 0666); //All permission for owner
+    int fd = shm_open(name, O_CREAT|O_RDWR, 0666); //All permissions
     if(fd < 0){
         perror("File descriptor error");
         return -1;
