@@ -2,12 +2,19 @@
 // Created by Karine Mellata on 2018-11-01.
 //
 
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <semaphore.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "a2_lib.h"
 #include "comp310_a2_test.h"
 
@@ -45,7 +52,7 @@ int init_info(store* ptr) {
 //Create a store if not yet created
 //Or open store if already existing
 int kv_store_create(char *name){
-    int fd = shm_open(name, O_CREAT|O_RDWR, 0600); //All permission for owner
+    int fd = shm_open(name, O_CREAT|O_RDWR, S_IRWXU); //All permission for owner
     if(fd < 0){
         perror("Error ");
         return -1;
