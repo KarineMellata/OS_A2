@@ -11,10 +11,6 @@
 #define MAX_VALUE_SIZE 256
 #define MAX_POD_ENTRIES 256
 #define MAX_VAL 10
-#define KV_SIZE sizeof(struct kv_entry) + 32 * sizeof(char)
-#define KV_SIZE2 sizeof(struct key_values) + MAX_VAL * KV_SIZE
-#define POD_SIZE sizeof(struct pod) + MAX_VAL * KV_SIZE2
-#define STORE_SIZE sizeof(struct store) + NUM_OF_PODS * POD_SIZE
 
 typedef struct kv { // Key value pair
     char key[MAX_KEY_SIZE];
@@ -35,5 +31,10 @@ typedef struct kv_pod { // Pods
 typedef struct kv_store { // Store
     pod pods[NUM_OF_PODS];
 } store;
+
+#define KV_SIZE sizeof(kv_entry) + 32 * sizeof(char)
+#define KV_SIZE2 sizeof(key_values) + MAX_VAL * KV_SIZE
+#define POD_SIZE sizeof(pod) + MAX_VAL * KV_SIZE2
+#define STORE_SIZE sizeof(store) + NUM_OF_PODS * POD_SIZE
 
 #endif //_A2_LIB_

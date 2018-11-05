@@ -54,7 +54,7 @@ int kv_store_create(char *name){
         return -1;
     }
 
-    if(ftruncate(fd, strlen(store)) < 0){
+    if(ftruncate(fd, STORE_SIZE) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -151,7 +151,7 @@ int kv_store_write(char *key, char *value){
         return -1;
     }
 
-    if(ftruncate(fd, strlen(store)) < 0){
+    if(ftruncate(fd, STORE_SIZE) < 0){
         close(fd);
         perror("Error ");
         return -1;
@@ -188,7 +188,7 @@ char *kv_store_read(char *key){
         return -1;
     }
 
-    if(ftruncate(fd, strlen(store)) < 0){
+    if(ftruncate(fd, STORE_SIZE) < 0){
         close(fd);
         perror("Error ");
         return -1;
